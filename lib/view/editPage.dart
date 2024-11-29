@@ -366,7 +366,7 @@ class _EditPageState extends State<EditPage> {
         state: statesss,
         category: category,
         images: imageSelect?.path ?? "");
-    Provider.of<prodectDetails>(context, listen: false)
+    Provider.of<ProdectDetails>(context, listen: false)
         .editingProdect(widget.index, saveAll);
 
     

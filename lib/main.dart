@@ -4,9 +4,9 @@ import 'package:benefique/controller/profileFunctions.dart';
 import 'package:benefique/modal/cartModal/cartModal.dart';
 import 'package:benefique/modal/prodectModal/prodectModal.dart';
 import 'package:benefique/modal/profileModal/profileModal.dart';
-
 import 'package:benefique/view/LoginAndSpalsh/splash.dart';
 import 'package:benefique/view/bottomNavigation/bt.dart';
+import 'package:benefique/view/wishlist/whislit.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
@@ -37,9 +37,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
-          ChangeNotifierProvider(create: (context) => profilefunction()),
-          ChangeNotifierProvider(create: (context) => cartFunction()),
-          ChangeNotifierProvider(create: (context) => prodectDetails()),
+          ChangeNotifierProvider(create: (context) => Profilefunction()),
+          ChangeNotifierProvider(create: (context) => CartFunction()),
+          ChangeNotifierProvider(create: (context) => ProdectDetails()),
         ],
         child: MaterialApp(
             debugShowCheckedModeBanner: false, home: Navigationpage()));

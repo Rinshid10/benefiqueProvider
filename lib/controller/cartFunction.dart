@@ -3,49 +3,59 @@ import 'package:benefique/modal/prodectModal/prodectModal.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 
-class cartFunction extends ChangeNotifier {
+class CartFunction extends ChangeNotifier {
+  List imagefoWhislist = [
+    'asset/addidasIConsimages.jpg',
+    'asset/converseiconimage.png',
+    'asset/pumaIconimage.jpg',
+    'asset/nikeimageicocn.png',
+    'asset/newbalanceIcons.png'
+  ];
   List<StoreCart> getForStore = [];
-  List<StoreCart> cartList = [];
   String addTocartChange = 'Add to Cart';
 
-  bool isContain(StoreCart items) {
-    return cartList.contains(items);
-  }
-
-  void changeCartname(StoreCart itemss) {
-    if (isContain(itemss)) {
-      getForStore.remove(itemss);
-    } else {
-      getForStore.add(itemss);
-    }
-
+  Future<void> initializeCart() async {
+    var box = await Hive.openBox<StoreCart>('cartBox');
+    getForStore = box.values.toList();
     notifyListeners();
   }
 
-  Future<void> saveCartItem(Prodectmodel cartItem) async {
-    var box = await Hive.openBox<StoreCart>('cartBox');
+  void change(Prodectmodel values) async {
     final storeCartItem = StoreCart(
-        itemsName: cartItem.itemname,
-        price: cartItem.yourPrice.toString(),
-        image: cartItem.images);
-    await box.add(storeCartItem);
-    getForStore.clear();
-    getForStore.addAll(box.values);
+        itemsName: values.itemname,
+        price: values.yourPrice.toString(),
+        image: values.images);
 
+    int index =
+        getForStore.indexWhere((item) => item.itemsName == values.itemname);
+
+    if (index != -1) {
+      await deleteCart(index);
+      values.isInCart = false;
+    } else {
+      await saveCartItem(storeCartItem);
+      values.isInCart = true;
+    }
+    notifyListeners();
+  }
+
+  Future<void> saveCartItem(StoreCart cartItem) async {
+    var box = await Hive.openBox<StoreCart>('cartBox');
+    await box.add(cartItem);
+    getForStore.add(cartItem);
     notifyListeners();
   }
 
   Future<void> getAllCart() async {
     final box = await Hive.openBox<StoreCart>('cartBox');
-    getForStore.clear();
-    getForStore.addAll(box.values);
-
+    getForStore = box.values.toList();
     notifyListeners();
   }
 
-  Future deleteCart(int index) async {
+  Future<void> deleteCart(int index) async {
     final box = await Hive.openBox<StoreCart>('cartBox');
-    box.deleteAt(index);
-    getAllCart();
+    await box.deleteAt(index);
+    getForStore.removeAt(index);
+    notifyListeners();
   }
 }

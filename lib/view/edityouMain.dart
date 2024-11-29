@@ -17,7 +17,7 @@ class _EditMainState extends State<EditMain> {
   @override
   void initState() {
     super.initState();
-    Provider.of<prodectDetails>(context, listen: false).getAllProdect();
+    Provider.of<ProdectDetails>(context, listen: false).getAllProdect();
   }
 
   @override
@@ -31,7 +31,7 @@ class _EditMainState extends State<EditMain> {
             style: TextStyle(color: Colors.white),
           ),
         ),
-        body: Consumer<prodectDetails>(
+        body: Consumer<ProdectDetails>(
           builder: (context, value, child) {
             final getall = value.getProdectDetals;
             return ListView.builder(

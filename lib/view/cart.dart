@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:benefique/constants/image_constant.dart';
 import 'package:benefique/constants/text_constant.dart';
 import 'package:benefique/controller/cartFunction.dart';
+
 import 'package:benefique/controller/prodectModel.dart';
 import 'package:benefique/view/widgets/widgetAndColors.dart';
 import 'package:flutter/material.dart';
@@ -43,14 +44,14 @@ class _CartPageState extends State<CartPage> {
   @override
   void initState() {
     super.initState();
-    Provider.of<prodectDetails>(context, listen: false).getAllProdect();
+    Provider.of<ProdectDetails>(context, listen: false).getAllProdect();
     updateTotals();
   }
 
   void updateTotals() {
     final getOne =
-        Provider.of<cartFunction>(context, listen: false).getForStore;
-setState(() {
+        Provider.of<CartFunction>(context, listen: false).getForStore;
+    setState(() {
       subtotal = double.parse(getSubtotal(getOne).toStringAsFixed(2));
       total =
           double.parse((subtotal + deliveryCharge + tax).toStringAsFixed(2));
@@ -63,15 +64,15 @@ setState(() {
 
   void deleteCart(int index) {
     final getOne =
-        Provider.of<cartFunction>(context, listen: false).getForStore;
+        Provider.of<CartFunction>(context, listen: false).getForStore;
     getOne.removeAt(index);
     refreshCart();
-      }
+  }
 
   @override
   Widget build(BuildContext context) {
     final getcart =
-        Provider.of<cartFunction>(context, listen: false).getForStore;
+        Provider.of<CartFunction>(context, listen: false).getForStore;
     return Scaffold(
       backgroundColor: mainBlueColor,
       body: SingleChildScrollView(
@@ -136,7 +137,7 @@ setState(() {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Gap(30),
-                        Consumer<cartFunction>(
+                        Consumer<CartFunction>(
                           builder: (context, value, child) {
                             final getThevalues = value.getForStore;
                             return ListView.builder(

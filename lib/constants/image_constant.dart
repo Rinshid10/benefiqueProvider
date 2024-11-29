@@ -25,4 +25,5 @@ class ImageConstant {
   static const imagesFOrflase = 'asset/Animation - 1732168735435.gif';
   static const imageJso = 'asset/DeleveryAnimation.json';
   static const trueAnimation = 'asset/Trueanimation.json';
+   
 }

@@ -2,7 +2,6 @@ import 'package:hive/hive.dart';
 part 'prodectModal.g.dart';
 
 @HiveType(typeId: 1)
-
 class Prodectmodel {
   @HiveField(0)
   String? modal;
@@ -22,7 +21,9 @@ class Prodectmodel {
   String? images;
   @HiveField(8)
   String? category;
- 
+  @HiveField(9)
+  bool isInCart;
+
   Prodectmodel(
       {required this.modal,
       required this.itemname,
@@ -31,6 +32,7 @@ class Prodectmodel {
       required this.discound,
       required this.country,
       required this.state,
+      this.isInCart = false,
       this.category,
       this.images});
 }

@@ -653,6 +653,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.11.1"
+  material_icons_named:
+    dependency: "direct main"
+    description:
+      name: material_icons_named
+      sha256: c04c39e6b3d5f1238112253368500764571f7275db059cdbb2336155a56e00a7
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.16.0+2"
   meta:
     dependency: transitive
     description:

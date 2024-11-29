@@ -24,6 +24,7 @@ class ProdectmodelAdapter extends TypeAdapter<Prodectmodel> {
       discound: fields[4] as String?,
       country: fields[5] as String?,
       state: fields[6] as String?,
+      isInCart: fields[9] as bool,
       category: fields[8] as String?,
       images: fields[7] as String?,
     );
@@ -32,7 +33,7 @@ class ProdectmodelAdapter extends TypeAdapter<Prodectmodel> {
   @override
   void write(BinaryWriter writer, Prodectmodel obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(10)
       ..writeByte(0)
       ..write(obj.modal)
       ..writeByte(1)
@@ -50,7 +51,9 @@ class ProdectmodelAdapter extends TypeAdapter<Prodectmodel> {
       ..writeByte(7)
       ..write(obj.images)
       ..writeByte(8)
-      ..write(obj.category);
+      ..write(obj.category)
+      ..writeByte(9)
+      ..write(obj.isInCart);
   }
 
   @override

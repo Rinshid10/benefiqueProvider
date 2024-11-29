@@ -2,7 +2,7 @@ import 'package:benefique/modal/profileModal/profileModal.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
-class profilefunction extends ChangeNotifier {
+class Profilefunction extends ChangeNotifier {
   List<ProfileOfbenifique> getProfileDetils = [];
   
 Future addProfileData(ProfileOfbenifique values) async {

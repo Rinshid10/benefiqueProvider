@@ -39,7 +39,7 @@ class _SignUpPageState extends State<SignUpPage> {
           username: usernameSave,
           password: paswordsave,
           phonenumber: numberSave);
-      Provider.of<profilefunction>(context, listen: false).addProfileData(save);
+      Provider.of<Profilefunction>(context, listen: false).addProfileData(save);
     
       // var box = Hive.box('userBox');
       // box.put('username', usernameSave);

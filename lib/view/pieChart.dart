@@ -18,7 +18,7 @@ class _DashboardState extends State<Dashboard> {
   @override
   void initState() {
     super.initState();
-    Provider.of<prodectDetails>(context, listen: false).getAllProdect();
+    Provider.of<ProdectDetails>(context, listen: false).getAllProdect();
   }
 
   final List<Color> colorList = [
@@ -49,7 +49,7 @@ class _DashboardState extends State<Dashboard> {
       body: Column(
         children: [
           const Gap(30),
-          Consumer<prodectDetails>(
+          Consumer<ProdectDetails>(
             builder: (context, value, child) {
               final getlist = value.getProdectDetals;
               final adiidas =
@@ -101,7 +101,7 @@ class _DashboardState extends State<Dashboard> {
             fontw: FontWeight.bold,
           ),
           const Gap(20),
-          Consumer<prodectDetails>(
+          Consumer<ProdectDetails>(
             builder: (context, value, child) {
               final getdatas = value.getProdectDetals;
               final adidass =

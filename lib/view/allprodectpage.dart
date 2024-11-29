@@ -4,18 +4,22 @@ import 'package:benefique/constants/image_constant.dart';
 import 'package:benefique/constants/text_constant.dart';
 import 'package:benefique/controller/cartFunction.dart';
 import 'package:benefique/controller/prodectModel.dart';
+import 'package:benefique/controller/profileFunctions.dart';
+import 'package:benefique/modal/cartModal/cartModal.dart';
 import 'package:benefique/modal/prodectModal/prodectModal.dart';
+import 'package:benefique/modal/profileModal/profileModal.dart';
 import 'package:benefique/view/cart.dart';
 import 'package:benefique/view/viewProdect.dart';
 import 'package:benefique/view/widgets/widgetAndColors.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:material_icons_named/material_icons_named.dart';
 import 'package:provider/provider.dart';
 
 var cartindex = 0;
-bool cartTrue = false;
-bool wishList = false;
+
 dynamic colorForWhishList = Colors.grey;
 
 class AllprodectPage extends StatefulWidget {
@@ -34,11 +38,11 @@ class _AllprodectPageState extends State<AllprodectPage> {
   @override
   void initState() {
     super.initState();
-    Provider.of<prodectDetails>(context, listen: false)
+    Provider.of<ProdectDetails>(context, listen: false)
         .getAllProdect()
         .then((_) {
       // ignore: use_build_context_synchronously
-      Provider.of<prodectDetails>(context, listen: false)
+      Provider.of<ProdectDetails>(context, listen: false)
           .filteredListOfProduct('All');
       searchListUpdate();
     });
@@ -47,7 +51,7 @@ class _AllprodectPageState extends State<AllprodectPage> {
 
   void searchListUpdate() {
     var serchget =
-        Provider.of<prodectDetails>(context, listen: false).getFilterDetails;
+        Provider.of<ProdectDetails>(context, listen: false).getFilterDetails;
     setState(() {
       if (search.isEmpty) {
         searchResult = serchget;
@@ -73,14 +77,33 @@ class _AllprodectPageState extends State<AllprodectPage> {
 
   @override
   Widget build(BuildContext context) {
+    int a = Provider.of<CartFunction>(context).getForStore.length;
+
     final prodectDetailsGEt =
-        Provider.of<prodectDetails>(context, listen: false).getProdectDetals;
+        Provider.of<ProdectDetails>(context, listen: false).getProdectDetals;
     final filterlsit =
-        Provider.of<prodectDetails>(context, listen: false).getFilterDetails;
+        Provider.of<ProdectDetails>(context, listen: false).getFilterDetails;
+    final forProfile = Provider.of<Profilefunction>(
+      context,
+    );
 
     return Scaffold(
       backgroundColor: bagroundColorOFscreen,
       appBar: AppBar(
+        title: Row(
+          children: [
+            textAoboshiOne2(
+                text: "Hey ",
+                fontSizes: 20,
+                colors: Colors.black,
+                fontw: FontWeight.w800),
+            textAoboshiOne2(
+                text: forProfile.getProfileDetils.first.username.toString(),
+                fontSizes: 18,
+                colors: mainBlueColor,
+                fontw: FontWeight.bold),
+          ],
+        ),
         automaticallyImplyLeading: false,
         backgroundColor: bagroundColorOFscreen,
         actions: [
@@ -88,10 +111,8 @@ class _AllprodectPageState extends State<AllprodectPage> {
             padding: const EdgeInsets.only(right: 20),
             child: Row(
               children: [
-                const Icon(Iconsax.heart5),
-                const Gap(20),
                 Badge(
-                  label: Text(cartindex.toString()),
+                  label: Text(a.toString()),
                   alignment: Alignment.topRight,
                   child: GestureDetector(
                       onTap: () {
@@ -104,8 +125,37 @@ class _AllprodectPageState extends State<AllprodectPage> {
                           ),
                         );
                       },
-                      child: Icon(Iconsax.shopping_cart)),
+                      child: Icon(
+                        Icons.favorite,
+                        color: Colors.pink,
+                        size: 28,
+                      )),
                 ),
+                const Gap(15),
+                a == 0
+                    ? Icon(
+                        CupertinoIcons.cart,
+                        size: 28,
+                      )
+                    : Badge(
+                        label: Text(a.toString()),
+                        alignment: Alignment.topRight,
+                        child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (ctx) => CartPage(
+                                    cartItemsOfEach: prodectDetailsGEt,
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Icon(
+                              CupertinoIcons.cart,
+                              size: 28,
+                            )),
+                      ),
               ],
             ),
           ),
@@ -197,10 +247,10 @@ class _AllprodectPageState extends State<AllprodectPage> {
 Widget GridForAllProdect() {
   return Padding(
     padding: const EdgeInsets.only(left: 10, right: 10),
-    child: Consumer<prodectDetails>(
-      builder: (context, value, child) {
-        final prodectGett = value.getProdectDetals;
-        final changeCartname = value.addTocartChange;
+    child: Consumer<ProdectDetails>(
+      builder: (context, prodectValues, child) {
+        final prodectGett = prodectValues.getProdectDetals;
+
         return GridView.builder(
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
@@ -304,56 +354,65 @@ Widget GridForAllProdect() {
                     child: Padding(
                       padding: const EdgeInsets.only(
                           left: 10, right: 10, bottom: 10),
-                      child: Consumer<prodectDetails>(
+                      child: Consumer<CartFunction>(
                         builder: (context, value, child) {
-                          final getaall = value.getProdectDetals;
-                        
                           return ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              elevation: 0,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                side: const BorderSide(color: Colors.black26),
+                              style: ElevatedButton.styleFrom(
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  side: const BorderSide(color: Colors.black26),
+                                ),
+                                backgroundColor: Colors.white,
+                                minimumSize: const Size(double.infinity, 40),
                               ),
-                              backgroundColor: Colors.white,
-                              minimumSize: const Size(double.infinity, 40),
-                            ),
-                            onPressed: () {
-                              final valuess = getaall[index];
-                              // Provider.of<cartFunction>(context, listen: false)
-                              //     .saveCartItem(getDatass);
-                                  
-                                
-                              // value.changeCartname(index);
-                              
+                              onPressed: () {
+                                final valuess = prodectGett[index];
 
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(SnackBar(
-                                      duration: Duration(milliseconds: 300),
-                                      backgroundColor: bagroundColorOFscreen,
-                                      content: Row(
-                                        children: [
-                                          SizedBox(
-                                            height: 50,
-                                            width: 60,
-                                            child: Image(
-                                                image: AssetImage(ImageConstant
-                                                    .cartAnimationNotifyer)),
-                                          ),
-                                          Gap(30),
-                                          textAoboshiOne2(
-                                              text: TextConstant.addedtoCart,
-                                              fontSizes: 18,
-                                              colors: Colors.black,
-                                              fontw: FontWeight.bold)
-                                        ],
-                                      )));
-                            },
-                            child: Text(
-                              changeCartname.toString(),
-                              style: TextStyle(color: Colors.red),
-                            ),
-                          );
+                                Provider.of<CartFunction>(context,
+                                        listen: false)
+                                    .change(valuess);
+
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(SnackBar(
+                                        duration: Duration(milliseconds: 300),
+                                        backgroundColor: bagroundColorOFscreen,
+                                        content: Row(
+                                          children: [
+                                            SizedBox(
+                                              height: 50,
+                                              width: 60,
+                                              child: Image(
+                                                  image: AssetImage(ImageConstant
+                                                      .cartAnimationNotifyer)),
+                                            ),
+                                            Gap(30),
+                                            textAoboshiOne2(
+                                                text: TextConstant.addedtoCart,
+                                                fontSizes: 18,
+                                                colors: Colors.black,
+                                                fontw: FontWeight.bold)
+                                          ],
+                                        )));
+                              },
+                              child: prodectGett[index].isInCart
+                                  ? Text('Added To cart')
+                                  : Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'Add to Cart',
+                                          style: TextStyle(color: Colors.black),
+                                        ),
+                                        Gap(5),
+                                        Icon(
+                                          Icons.shopping_cart_checkout,
+                                          size: 20,
+                                          color: Colors.black,
+                                        )
+                                      ],
+                                    ));
                         },
                       ),
                     ),
