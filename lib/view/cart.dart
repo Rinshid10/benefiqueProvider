@@ -29,9 +29,7 @@ const double deliveryCharge = 50;
 const double tax = 30;
 
 class CartPage extends StatefulWidget {
-  final List<Prodectmodel> cartItemsOfEach;
-
-  const CartPage({super.key, required this.cartItemsOfEach});
+  const CartPage({super.key});
 
   @override
   State<CartPage> createState() => _CartPageState();
@@ -71,6 +69,7 @@ class _CartPageState extends State<CartPage> {
 
   @override
   Widget build(BuildContext context) {
+    
     final getcart =
         Provider.of<CartFunction>(context, listen: false).getForStore;
     return Scaffold(
@@ -140,52 +139,73 @@ class _CartPageState extends State<CartPage> {
                         Consumer<CartFunction>(
                           builder: (context, value, child) {
                             final getThevalues = value.getForStore;
-                            return ListView.builder(
-                              physics: const NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              itemCount: getThevalues.length,
-                              itemBuilder: (context, index) {
-                                final item = getThevalues[index];
-                                final imagePath = item.image;
+                            return getThevalues.length == 0
+                                ? Container(
+                                    child: Stack(children: [
+                                      Positioned(
+                                        bottom: 0,
+                                        left: 90,
+                                        child: textAoboshiOne2(
+                                            text: "Your wishlist is empty!",
+                                            fontSizes: 20,
+                                            colors: Colors.black,
+                                            fontw: FontWeight.w900),
+                                      ),
+                                      Image(
+                                          image: AssetImage(
+                                              'asset/wish-removebg-preview.png'))
+                                    ]),
+                                  )
+                                : ListView.builder(
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemCount: getThevalues.length,
+                                    itemBuilder: (context, index) {
+                                      final item = getThevalues[index];
+                                      final imagePath = item.image;
 
-                                if (imagePath == null) {
-                                  log(' ${item.itemsName}');
-                                }
+                                      if (imagePath == null) {
+                                        log(' ${item.itemsName}');
+                                      }
 
-                                return SizedBox(
-                                  height: 100,
-                                  child: Card(
-                                    color: const Color(0xffFBFCF8),
-                                    elevation: 5,
-                                    child: Center(
-                                      child: ListTile(
-                                        leading: SizedBox(
-                                          height: double.infinity,
-                                          width: 60,
-                                          child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            child: Image(
-                                              image: FileImage(File(item
-                                                      .image ??
-                                                  ImageConstant.defaultimage)),
+                                      return SizedBox(
+                                        height: 100,
+                                        child: Card(
+                                          color: const Color(0xffFBFCF8),
+                                          elevation: 5,
+                                          child: Center(
+                                            child: ListTile(
+                                              leading: SizedBox(
+                                                height: double.infinity,
+                                                width: 60,
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  child: Image(
+                                                    image: FileImage(File(
+                                                        item.image ??
+                                                            ImageConstant
+                                                                .defaultimage)),
+                                                  ),
+                                                ),
+                                              ),
+                                              title: Text(
+                                                  item.itemsName.toString()),
+                                              subtitle:
+                                                  Text(item.price.toString()),
+                                              trailing: IconButton(
+                                                icon: const Icon(Icons.delete),
+                                                onPressed: () {
+                                                  deleteCart(index);
+                                                },
+                                              ),
                                             ),
                                           ),
                                         ),
-                                        title: Text(item.itemsName.toString()),
-                                        subtitle: Text(item.price.toString()),
-                                        trailing: IconButton(
-                                          icon: const Icon(Icons.delete),
-                                          onPressed: () {
-                                            deleteCart(index);
-                                          },
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
-                            );
+                                      );
+                                    },
+                                  );
                           },
                         ),
                         const Gap(50),

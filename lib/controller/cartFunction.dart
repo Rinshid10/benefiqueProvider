@@ -13,6 +13,7 @@ class CartFunction extends ChangeNotifier {
   ];
   List<StoreCart> getForStore = [];
   String addTocartChange = 'Add to Cart';
+  
 
   Future<void> initializeCart() async {
     var box = await Hive.openBox<StoreCart>('cartBox');

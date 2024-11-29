@@ -1,5 +1,9 @@
+import 'dart:io';
+
+import 'package:benefique/constants/image_constant.dart';
 import 'package:benefique/controller/cartFunction.dart';
 import 'package:benefique/controller/prodectModel.dart';
+import 'package:benefique/controller/whislist.dart';
 import 'package:benefique/view/widgets/widgetAndColors.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -12,6 +16,7 @@ class Whislit extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<WhislistProvider>(context, listen: false).getAllWishlist();
     return Scaffold(
       backgroundColor: bagroundColorOFscreen,
       appBar: AppBar(
@@ -88,91 +93,117 @@ class Whislit extends StatelessWidget {
                 ],
               ),
               Gap(15),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  return Consumer<ProdectDetails>(
-                    builder: (context, value, child) => Container(
-                      height: 120,
-                      width: double.infinity,
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 10),
-                        child: Card(
-                          color: value.colors[index % value.colors.length],
-                          elevation: 2,
-                          child: Center(
-                            child: Row(
-                              children: [
-                                Container(
-                                  height: double.infinity,
-                                  width: 120,
-                                  child: Image(
-                                    image: AssetImage(
-                                      'asset/wish-removebg-preview.png',
-                                    ),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                                Gap(20),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Gap(2),
-                                    textAoboshiOne2(
-                                        text: 'RInshid',
-                                        fontSizes: 19,
-                                        colors: Colors.black,
-                                        fontw: FontWeight.normal),
-                                    textAoboshiOne2(
-                                        text: 'Price : 12345',
-                                        fontSizes: 13,
-                                        colors: Colors.black,
-                                        fontw: FontWeight.normal),
-                                    Gap(10),
-                                    Container(
-                                      height: 30,
-                                      width: 100,
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                          border: Border.all(
-                                              color: Colors.black54)),
-                                      child: Center(
-                                        child: Row(
+              Consumer<WhislistProvider>(
+                builder: (context, value, child) {
+                  final toWhislistitems = value.getForWishlist;
+
+                return   toWhislistitems.length == 0
+                      ? Container(
+                          child: Stack(children: [
+                            Positioned(
+                              bottom: 0,
+                              left: 90,
+                              child: textAoboshiOne2(
+                                  text: "Your wishlist is empty!",
+                                  fontSizes: 20,
+                                  colors: Colors.black,
+                                  fontw: FontWeight.w900),
+                            ),
+                            Image(
+                                image: AssetImage(
+                                    'asset/wish-removebg-preview.png'))
+                          ]),
+                        )
+                      : ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: value.getForWishlist.length,
+                          itemBuilder: (context, index) {
+                            final save = toWhislistitems[index];
+                            return SizedBox(
+                              height: 120,
+                              width: double.infinity,
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: Card(
+                                  color:
+                                      value.colors[index % value.colors.length],
+                                  elevation: 2,
+                                  child: Center(
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          height: double.infinity,
+                                          width: 120,
+                                          child: Image(
+                                            image: FileImage(File(save.image ??
+                                                ImageConstant.defaultimage)),
+                                          ),
+                                        ),
+                                        Gap(20),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
                                           children: [
+                                            Gap(2),
                                             textAoboshiOne2(
-                                                text: "Add To Cart",
-                                                fontSizes: 12,
+                                                text: save.name.toString(),
+                                                fontSizes: 19,
                                                 colors: Colors.black,
                                                 fontw: FontWeight.normal),
-                                            Gap(2),
-                                            Icon(
-                                              CupertinoIcons.cart,
-                                              size: 15,
+                                            textAoboshiOne2(
+                                                text:
+                                                    'Price : ${save.price.toString()}',
+                                                fontSizes: 13,
+                                                colors: Colors.black,
+                                                fontw: FontWeight.normal),
+                                            Gap(10),
+                                            Container(
+                                              height: 30,
+                                              width: 100,
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(5),
+                                                  border: Border.all(
+                                                      color: Colors.black54)),
+                                              child: Center(
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    textAoboshiOne2(
+                                                        text: "Add To Cart",
+                                                        fontSizes: 12,
+                                                        colors: Colors.black,
+                                                        fontw:
+                                                            FontWeight.normal),
+                                                    Gap(2),
+                                                    Icon(
+                                                      CupertinoIcons.cart,
+                                                      size: 15,
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
                                             )
                                           ],
                                         ),
-                                      ),
-                                    )
-                                  ],
+                                        Spacer(),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(right: 20),
+                                          child: Icon(Icons.heart_broken),
+                                        )
+                                      ],
+                                    ),
+                                  ),
                                 ),
-                                Spacer(),
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 20),
-                                  child: Icon(Icons.heart_broken),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
+                              ),
+                            );
+                          },
+                        );
                 },
               ),
             ],
@@ -181,21 +212,4 @@ class Whislit extends StatelessWidget {
       ),
     );
   }
-}
-
-Widget containers() {
-  return Container(
-    child: Stack(children: [
-      Positioned(
-        bottom: 0,
-        left: 90,
-        child: textAoboshiOne2(
-            text: "Your wishlist is empty!",
-            fontSizes: 20,
-            colors: Colors.black,
-            fontw: FontWeight.w900),
-      ),
-      Image(image: AssetImage('asset/wish-removebg-preview.png'))
-    ]),
-  );
 }

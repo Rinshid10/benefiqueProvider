@@ -5,17 +5,19 @@ import 'package:benefique/constants/text_constant.dart';
 import 'package:benefique/controller/cartFunction.dart';
 import 'package:benefique/controller/prodectModel.dart';
 import 'package:benefique/controller/profileFunctions.dart';
-import 'package:benefique/modal/cartModal/cartModal.dart';
+import 'package:benefique/controller/whislist.dart';
+
 import 'package:benefique/modal/prodectModal/prodectModal.dart';
-import 'package:benefique/modal/profileModal/profileModal.dart';
+
 import 'package:benefique/view/cart.dart';
 import 'package:benefique/view/viewProdect.dart';
 import 'package:benefique/view/widgets/widgetAndColors.dart';
+import 'package:benefique/view/wishlist/whislit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:material_icons_named/material_icons_named.dart';
+
 import 'package:provider/provider.dart';
 
 var cartindex = 0;
@@ -78,6 +80,7 @@ class _AllprodectPageState extends State<AllprodectPage> {
   @override
   Widget build(BuildContext context) {
     int a = Provider.of<CartFunction>(context).getForStore.length;
+    int b = Provider.of<WhislistProvider>(context).getForWishlist.length;
 
     final prodectDetailsGEt =
         Provider.of<ProdectDetails>(context, listen: false).getProdectDetals;
@@ -90,20 +93,20 @@ class _AllprodectPageState extends State<AllprodectPage> {
     return Scaffold(
       backgroundColor: bagroundColorOFscreen,
       appBar: AppBar(
-        title: Row(
-          children: [
-            textAoboshiOne2(
-                text: "Hey ",
-                fontSizes: 20,
-                colors: Colors.black,
-                fontw: FontWeight.w800),
-            textAoboshiOne2(
-                text: forProfile.getProfileDetils.first.username.toString(),
-                fontSizes: 18,
-                colors: mainBlueColor,
-                fontw: FontWeight.bold),
-          ],
-        ),
+        // title: Row(
+        //   children: [
+        //     textAoboshiOne2(
+        //         text: "Hey ",
+        //         fontSizes: 20,
+        //         colors: Colors.black,
+        //         fontw: FontWeight.w800),
+        //     textAoboshiOne2(
+        //         text: forProfile.getProfileDetils.first.username.toString(),
+        //         fontSizes: 18,
+        //         colors: mainBlueColor,
+        //         fontw: FontWeight.bold),
+        //   ],
+        // ),
         automaticallyImplyLeading: false,
         backgroundColor: bagroundColorOFscreen,
         actions: [
@@ -111,31 +114,51 @@ class _AllprodectPageState extends State<AllprodectPage> {
             padding: const EdgeInsets.only(right: 20),
             child: Row(
               children: [
-                Badge(
-                  label: Text(a.toString()),
-                  alignment: Alignment.topRight,
-                  child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
+                b == 0
+                    ? GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Whislit()));
+                        },
+                        child: Icon(
+                          Icons.favorite,
+                          color: Colors.pink,
+                          size: 28,
+                        ),
+                      )
+                    : Badge(
+                        label: Text(Provider.of<WhislistProvider>(
                           context,
-                          MaterialPageRoute(
-                            builder: (ctx) => CartPage(
-                              cartItemsOfEach: prodectDetailsGEt,
-                            ),
-                          ),
-                        );
-                      },
-                      child: Icon(
-                        Icons.favorite,
-                        color: Colors.pink,
-                        size: 28,
-                      )),
-                ),
+                        ).getForWishlist.length.toString()),
+                        alignment: Alignment.topRight,
+                        child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (ctx) => Whislit()),
+                              );
+                            },
+                            child: Icon(
+                              Icons.favorite,
+                              color: Colors.pink,
+                              size: 28,
+                            )),
+                      ),
                 const Gap(15),
                 a == 0
-                    ? Icon(
-                        CupertinoIcons.cart,
-                        size: 28,
+                    ? GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (ctx) => CartPage()),
+                          );
+                        },
+                        child: Icon(
+                          CupertinoIcons.cart,
+                          size: 28,
+                        ),
                       )
                     : Badge(
                         label: Text(a.toString()),
@@ -145,9 +168,7 @@ class _AllprodectPageState extends State<AllprodectPage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (ctx) => CartPage(
-                                    cartItemsOfEach: prodectDetailsGEt,
-                                  ),
+                                  builder: (ctx) => CartPage(),
                                 ),
                               );
                             },
@@ -165,22 +186,44 @@ class _AllprodectPageState extends State<AllprodectPage> {
         child: Column(
           children: [
             const Gap(15),
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 20),
-              child: TextFormField(
-                controller: searchController,
-                onChanged: (value) {
-                  search = value;
-                  searchListUpdate();
-                },
-                decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.all(10),
-                  hintText: TextConstant.searchHint,
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  suffixIcon: const Icon(Iconsax.search_normal_1),
+            Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 20),
+                    child: TextFormField(
+                      controller: searchController,
+                      onChanged: (value) {
+                        search = value;
+                        searchListUpdate();
+                      },
+                      decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.all(10),
+                        hintText: TextConstant.searchHint,
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                        suffixIcon: const Icon(Iconsax.search_normal_1),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 10),
+                  child: Container(
+                    height: 50,
+                    width: 60,
+                    child: Icon(
+                      Icons.filter_list,
+                      color: Colors.white,
+                      size: 25,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      color: mainBlueColor,
+                    ),
+                  ),
+                )
+              ],
             ),
             const Gap(20),
             Container(
@@ -205,10 +248,12 @@ class _AllprodectPageState extends State<AllprodectPage> {
                       decoration: BoxDecoration(
                         border: Border.all(
                           color: currentIndex == index
-                              ? Colors.black
+                              ? Colors.blue
                               : Colors.black45,
                         ),
-                        color: Colors.white,
+                        color: currentIndex == index
+                            ? mainBlueColor
+                            : Colors.white,
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Center(
@@ -218,7 +263,7 @@ class _AllprodectPageState extends State<AllprodectPage> {
                             fontWeight: FontWeight.w900,
                             fontSize: 13,
                             color: currentIndex == index
-                                ? Colors.black
+                                ? Colors.white
                                 : Colors.black45,
                           ),
                         ),
@@ -249,7 +294,7 @@ Widget GridForAllProdect() {
     padding: const EdgeInsets.only(left: 10, right: 10),
     child: Consumer<ProdectDetails>(
       builder: (context, prodectValues, child) {
-        final prodectGett = prodectValues.getProdectDetals;
+        final prodectGett = prodectValues.getFilterDetails;
 
         return GridView.builder(
           physics: const NeverScrollableScrollPhysics(),
@@ -306,14 +351,25 @@ Widget GridForAllProdect() {
                               ),
                             ),
                             Positioned(
-                              right: 10,
+                              right: 5,
                               top: 10,
                               child: Align(
                                   alignment: Alignment.topRight,
-                                  child: IconButton(
-                                      onPressed: () {},
-                                      icon: Icon(Iconsax.heart5,
-                                          size: 30, color: colorForWhishList))),
+                                  child: Consumer<WhislistProvider>(
+                                      builder: (context, value, child) {
+                                    return IconButton(
+                                        onPressed: () {
+                                          Provider.of<WhislistProvider>(context,
+                                                  listen: false)
+                                              .change(getDatass);
+                                        },
+                                        icon: Icon(
+                                          prodectGett[index].isWhislist
+                                              ? Iconsax.heart5
+                                              : CupertinoIcons.heart,
+                                          size: 30,color: Colors.red,
+                                        ));
+                                  })),
                             ),
                           ],
                         ),

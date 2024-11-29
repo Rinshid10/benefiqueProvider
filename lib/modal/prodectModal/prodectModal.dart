@@ -23,6 +23,8 @@ class Prodectmodel {
   String? category;
   @HiveField(9)
   bool isInCart;
+  @HiveField(10)
+  bool isWhislist;
 
   Prodectmodel(
       {required this.modal,
@@ -33,6 +35,7 @@ class Prodectmodel {
       required this.country,
       required this.state,
       this.isInCart = false,
+      this.isWhislist = false,
       this.category,
       this.images});
 }

@@ -1,18 +1,9 @@
-import 'package:benefique/modal/cartModal/cartModal.dart';
 import 'package:benefique/modal/prodectModal/prodectModal.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
 class ProdectDetails extends ChangeNotifier {
-  List colors = [
-    Colors.red[50],
-    Colors.blueGrey[50],
-    Colors.teal[50],
-    Colors.green[50],
-    Colors.amber[50],
-    Colors.pink[50],
-  ];
-
+  
 
   List<Prodectmodel> getProdectDetals = [];
   List<Prodectmodel> getFilterDetails = [];

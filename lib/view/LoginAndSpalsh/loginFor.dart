@@ -72,7 +72,7 @@ class _LoginState extends State<Login> {
                 Container(
                   color: bagroundColorOFscreen,
                   child: SizedBox(
-                      height: 400,
+                      height: 300,
                       width: 300,
                       child: Lottie.asset('asset/animatioNJson.json')),
                 ),
