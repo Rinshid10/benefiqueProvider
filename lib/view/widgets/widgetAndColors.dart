@@ -60,7 +60,7 @@ Widget benificContainerRow() {
               backgroundColor: mainBlueColor,
               child: Center(
                 child: textAoboshiOne2(
-                    text: a,
+                    text: 'R',
                     fontSizes: 20,
                     colors: Colors.white,
                     fontw: FontWeight.bold),

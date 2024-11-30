@@ -43,7 +43,6 @@ class _AllprodectPageState extends State<AllprodectPage> {
     Provider.of<ProdectDetails>(context, listen: false)
         .getAllProdect()
         .then((_) {
-      // ignore: use_build_context_synchronously
       Provider.of<ProdectDetails>(context, listen: false)
           .filteredListOfProduct('All');
       searchListUpdate();
@@ -81,6 +80,7 @@ class _AllprodectPageState extends State<AllprodectPage> {
   Widget build(BuildContext context) {
     int a = Provider.of<CartFunction>(context).getForStore.length;
     int b = Provider.of<WhislistProvider>(context).getForWishlist.length;
+    Provider.of<ProdectDetails>(context, listen: false).getAllProdect();
 
     final prodectDetailsGEt =
         Provider.of<ProdectDetails>(context, listen: false).getProdectDetals;
@@ -294,7 +294,7 @@ Widget GridForAllProdect() {
     padding: const EdgeInsets.only(left: 10, right: 10),
     child: Consumer<ProdectDetails>(
       builder: (context, prodectValues, child) {
-        final prodectGett = prodectValues.getFilterDetails;
+        final prodectGett = prodectValues.getProdectDetals;
 
         return GridView.builder(
           physics: const NeverScrollableScrollPhysics(),
@@ -367,7 +367,8 @@ Widget GridForAllProdect() {
                                           prodectGett[index].isWhislist
                                               ? Iconsax.heart5
                                               : CupertinoIcons.heart,
-                                          size: 30,color: Colors.red,
+                                          size: 30,
+                                          color: Colors.red,
                                         ));
                                   })),
                             ),

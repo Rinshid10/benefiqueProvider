@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
 class ProdectDetails extends ChangeNotifier {
-  
-
   List<Prodectmodel> getProdectDetals = [];
   List<Prodectmodel> getFilterDetails = [];
 
@@ -48,5 +46,6 @@ class ProdectDetails extends ChangeNotifier {
       getFilterDetails =
           prod.where((product) => product.category == category).toList();
     }
+    notifyListeners();
   }
 }

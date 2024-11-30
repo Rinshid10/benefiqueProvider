@@ -63,4 +63,6 @@ class WhislistProvider extends ChangeNotifier {
     getForWishlist.removeAt(index);
     notifyListeners();
   }
+
+  void removeFromWishlist(param0) {}
 }

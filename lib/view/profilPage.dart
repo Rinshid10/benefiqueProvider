@@ -324,5 +324,3 @@ class _ProfilePState extends State<ProfileP> {
     );
   }
 }
-
-var a = nameForProfile.toString().split('').first;
