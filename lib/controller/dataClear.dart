@@ -13,9 +13,6 @@ Future dataClear(BuildContext context) async {
   box.clear();
   prodectDb.clear();
 
-  
   Navigator.pushReplacement(
-     
-      context,
-      MaterialPageRoute(builder: (ctx) => const Login()));
+      context, MaterialPageRoute(builder: (ctx) => Login()));
 }

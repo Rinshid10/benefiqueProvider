@@ -20,6 +20,13 @@ class _EditPagedForProfileState extends State<EditPagedForProfile> {
   TextEditingController phonenumber = TextEditingController();
   File? selectedImage;
 
+  @override
+  void initState() {
+    super.initState();
+    take(); // Load existing profile data when the screen is initialized
+  }
+
+  // Load profile data from Hive storage
   Future<void> take() async {
     var box = await Hive.openBox<ProfileOfbenifique>('saveData');
 
@@ -36,110 +43,152 @@ class _EditPagedForProfileState extends State<EditPagedForProfile> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    take();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[100],
       appBar: AppBar(
         centerTitle: true,
         title: textAoboshiOne2(
             text: 'Edit Your Profile',
             fontSizes: 20,
-            colors: Colors.black,
-            fontw: FontWeight.normal),
+            colors: Colors.white,
+            fontw: FontWeight.bold),
+        backgroundColor: Colors.blueAccent,
       ),
-      body: Center(
-        child: Container(
-          margin: EdgeInsets.only(left: 20, right: 20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              GestureDetector(
+      body: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+        child: Column(
+          children: [
+            Center(
+              child: GestureDetector(
                 onTap: () {
                   pickImageGallery();
                 },
                 child: CircleAvatar(
-                  radius: 70,
-                  backgroundImage: selectedImage != null
-                      ? FileImage(selectedImage!)
-                      : const AssetImage('') as ImageProvider,
+                  radius: 85,
+                  backgroundColor: Colors.blueAccent.withOpacity(0.2),
+                  child: selectedImage != null
+                      ? ClipOval(
+                          child: Image.file(
+                            selectedImage!,
+                            width: 160,
+                            height: 160,
+                            fit: BoxFit.cover,
+                          ),
+                        )
+                      : Icon(
+                          Icons.camera_alt,
+                          size: 50,
+                          color: Colors.blueAccent,
+                        ),
                 ),
               ),
-              Gap(25),
-              TextFormField(
-                controller: username,
-                decoration: InputDecoration(
-                  contentPadding: EdgeInsets.all(10),
-                  label: Text(TextConstant.hintTextUser),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                ),
+            ),
+            Gap(30),
+            _buildTextField(
+                controller: username, label: TextConstant.hintTextUser),
+            Gap(20),
+            _buildTextField(
+                controller: password, label: TextConstant.hintTextPassWord),
+            Gap(20),
+            _buildTextField(
+                controller: phonenumber, label: TextConstant.hintTextPhone),
+            Gap(30),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  minimumSize: Size(double.infinity, 55),
+                  backgroundColor: Colors.blueAccent,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  )),
+              onPressed: () {
+                saveProfile();
+              },
+              child: Text(
+                TextConstant.save,
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
               ),
-              Gap(20),
-              TextFormField(
-                controller: password,
-                decoration: InputDecoration(
-                  contentPadding: EdgeInsets.all(10),
-                  label: Text(TextConstant.hintTextPassWord),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                ),
-              ),
-              Gap(20),
-              TextFormField(
-                controller: phonenumber,
-                decoration: InputDecoration(
-                  contentPadding: EdgeInsets.all(10),
-                  label: Text(TextConstant.hintTextPhone),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                ),
-              ),
-              Gap(25),
-              ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      minimumSize: Size(130, 50),
-                      backgroundColor: mainBlueColor),
-                  onPressed: () {
-                    saveProfile();
-                  },
-                  child: textAoboshiOne2(
-                      text: TextConstant.save,
-                      fontSizes: 20,
-                      colors: Colors.white,
-                      fontw: FontWeight.bold))
-            ],
-          ),
+            )
+          ],
         ),
       ),
     );
   }
 
+  // Custom text field widget with rounded corners and elevation
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+  }) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+        labelText: label,
+        labelStyle: TextStyle(color: Colors.black87),
+        hintText: 'Enter your $label',
+        hintStyle: TextStyle(color: Colors.grey[600]),
+        filled: true,
+        fillColor: Colors.white,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: BorderSide(color: Colors.blueAccent, width: 1),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: BorderSide(color: Colors.blueAccent, width: 2),
+        ),
+      ),
+    );
+  }
+
+  // Save or update the profile
   Future<void> saveProfile() async {
     final usernameSave = username.text;
     final passwordSave = password.text;
     final phonenumberSave = phonenumber.text;
 
     var profile = ProfileOfbenifique(
-        username: usernameSave,
-        password: passwordSave,
-        phonenumber: phonenumberSave,
-        images: selectedImage?.path);
+      username: usernameSave,
+      password: passwordSave,
+      phonenumber: phonenumberSave,
+      images: selectedImage?.path,
+    );
 
     var box = await Hive.openBox<ProfileOfbenifique>('saveData');
-    await box.putAt(0, profile);
 
-    // ignore: use_build_context_synchronously
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text(TextConstant.profilesave)));
-    // ignore: use_build_context_synchronously
+    // Check if profile already exists
+    int existingIndex = -1;
+    for (int i = 0; i < box.length; i++) {
+      var existingProfile = box.getAt(i);
+      if (existingProfile != null && existingProfile.username == usernameSave) {
+        existingIndex = i;
+        break;
+      }
+    }
+
+    if (existingIndex != -1) {
+      // Update the existing profile
+      await box.putAt(existingIndex, profile);
+    } else {
+      // Add new profile if doesn't exist
+      await box.add(profile);
+    }
+
+    // Pop the current screen and show the snack bar
     Navigator.pop(context);
+
+    // Add a slight delay before showing the Snackbar
+    Future.delayed(Duration(milliseconds: 300), () {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(TextConstant.profilesave)));
+    });
   }
 
+  // Pick an image from the gallery
   Future pickImageGallery() async {
     final pickedFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);

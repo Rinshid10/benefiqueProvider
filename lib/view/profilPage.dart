@@ -6,6 +6,8 @@ import 'package:benefique/modal/profileModal/profileModal.dart';
 import 'package:benefique/view/LoginAndSpalsh/loginFor.dart';
 import 'package:benefique/view/edityouMain.dart';
 import 'package:benefique/view/widgets/widgetAndColors.dart';
+import 'package:benefique/view/wishlist/whislit.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -55,6 +57,7 @@ class _ProfilePState extends State<ProfileP> {
       backgroundColor: bagroundColorOFscreen,
       appBar: AppBar(
         automaticallyImplyLeading: false,
+        backgroundColor: bagroundColorOFscreen,
         title: const Text(
           TextConstant.profle,
           style: TextStyle(
@@ -73,9 +76,6 @@ class _ProfilePState extends State<ProfileP> {
               ValueListenableBuilder(
                 valueListenable: profileBox.listenable(),
                 builder: (context, box, child) {
-                  if (box.isEmpty) {
-                    return Center(child: Text(TextConstant.noProfle));
-                  }
                   final profile = box.values.first;
                   nameForProfile = profile.username;
                   return Center(
@@ -97,7 +97,7 @@ class _ProfilePState extends State<ProfileP> {
                               backgroundColor: Colors.white,
                               backgroundImage: profile.images != null
                                   ? FileImage(File(profile.images!))
-                                  : null,
+                                  : AssetImage('asset/proflenull.png'),
                             ),
                           ),
                         ),
@@ -127,14 +127,13 @@ class _ProfilePState extends State<ProfileP> {
             Align(
               alignment: Alignment.bottomCenter,
               child: Container(
-                height: MediaQuery.of(context).size.height < 350 ? 600 : 450,
+                height: MediaQuery.of(context).size.height,
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  boxShadow: const [
-                    BoxShadow(spreadRadius: 1, color: Colors.black)
-                  ],
-                  color: Color(0xfffbfbfb),
-                ),
+                    color: Color(0XFFE5E6E4),
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(70),
+                        topRight: Radius.circular(70))),
                 child: Padding(
                   padding: const EdgeInsets.only(left: 10, right: 10),
                   child: Column(
@@ -149,13 +148,21 @@ class _ProfilePState extends State<ProfileP> {
                             ),
                           );
                         },
-                        leading: Iconsax.profile_circle5,
+                        leading: CupertinoIcons.person,
                         traill: Iconsax.arrow_right,
                         text: TextConstant.editProfile,
                       ),
                       const Gap(10),
                       buildListTile(
-                        leading: Iconsax.heart5,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Whislit(),
+                            ),
+                          );
+                        },
+                        leading: CupertinoIcons.heart_circle,
                         traill: Iconsax.arrow_right,
                         text: TextConstant.wishlist,
                       ),
@@ -227,7 +234,7 @@ class _ProfilePState extends State<ProfileP> {
                             },
                           );
                         },
-                        leading: Iconsax.data,
+                        leading: CupertinoIcons.book,
                         traill: Iconsax.arrow_right,
                         text: TextConstant.clearAllData,
                       ),
@@ -280,7 +287,7 @@ class _ProfilePState extends State<ProfileP> {
                             },
                           );
                         },
-                        leading: Iconsax.logout5,
+                        leading: Iconsax.logout,
                         traill: Iconsax.arrow_right,
                         text: TextConstant.logout,
                       ),

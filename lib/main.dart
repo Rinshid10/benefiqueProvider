@@ -9,7 +9,10 @@ import 'package:benefique/modal/whislistMOdal/whislistmodal.dart';
 import 'package:benefique/view/LoginAndSpalsh/signUp.dart';
 import 'package:benefique/view/LoginAndSpalsh/splash.dart';
 import 'package:benefique/view/bottomNavigation/bt.dart';
+import 'package:benefique/view/pieChart.dart';
 import 'package:benefique/view/profilPage.dart';
+import 'package:benefique/view/sell.dart';
+import 'package:benefique/view/widgets/widgetAndColors.dart';
 
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
